@@ -5,6 +5,7 @@ import JobsView from "@/views/JobsView.vue";
 import JobView from "@/views/JobView.vue";
 import EditJobView from "@/views/EditJobView.vue";
 import AddJobView from "@/views/AddJobView.vue";
+import AddFrappeJobs from "@/views/AddFrappeJobs.vue";
 
 const  router = createRouter({
     history:createWebHistory(import.meta.env.Base_URL),
@@ -28,6 +29,11 @@ const  router = createRouter({
             path:'/jobs/add',
             name:'add-job',
             component:AddJobView
+        },
+        {
+            path:'/jobs/add-frappe-jobs',
+            name:'add-frappe-jobs',
+            component:AddFrappeJobs
         },
         {
             path:'/jobs/edit/:id',
