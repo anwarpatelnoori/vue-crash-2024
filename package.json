@@ -10,6 +10,7 @@
     "server": "json-server --watch src/JobsDesc.json --port 5000"
   },
   "dependencies": {
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.7.7",
     "json": "^11.0.0",
     "json-server": "^1.0.0-beta.3",

@@ -33,6 +33,9 @@ const isActiveLink = (routePath) => {
               <RouterLink to="/jobs/add-frappe-jobs"
                 :class="[isActiveLink('/jobs/add-frappe-jobs') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
                 Add Frappe Job</RouterLink>
+              <RouterLink to="/jobs/view-frappe-all-jobs"
+                :class="[isActiveLink('/jobs/view-frappe-all-jobs') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
+                View Frappe Jobs</RouterLink>
             </div>
           </div>
         </div>

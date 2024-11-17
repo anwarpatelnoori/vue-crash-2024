@@ -1,31 +1,39 @@
 <script setup>
 // import { ref, defineProps, onMounted } from 'vue';
 import { reactive, defineProps, onMounted } from 'vue';
-import SingleJobListing from './SingleJobListing.vue';
+import FrappeSingleJobListing from './FrappeSingleJobListing.vue';
 import { RouterLink } from 'vue-router';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import axios from 'axios'
 
-// using ref approach
-// const jobs = ref([])
 
-// using reactive approach
+// using reactive 
 const state = reactive({
     jobs:[],
     isLoading:true
 })
+
+// From frappe jobs
+const headers = {
+    'Authorization': 'Token 4caa1fb44962403:c9ffde8c1961297',
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  };
+  const job_fields = ["name","employment_type","designation", "job_title", "description", "location", "lower_range", "upper_range","company","custom_company_email","custom_company_phone","custom_company_description"];
+  const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
 onMounted(async ()=>{
     try{
-        const response = await axios.get('api/jobs')
-        state.jobs = response.data;
+        const response = await axios.get(`http://localhost:8001/api/resource/Job Opening?fields=${job_fields_json}`,{ headers })
+        state.jobs = response.data.data;
+        console.log(state.jobs);   
     }
     catch(error){
         console.log(error);   
-    }finally{
-        state.isLoading =false
+    }
+    finally{
+        state.isLoading=false
     }
 })
-// console.log(jobs.value);
 defineProps({
     limit: {
         type: Number,
@@ -51,11 +59,8 @@ defineProps({
 
             <!-- Shoe job listing when loading is done -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- // using ref -->
-                <!-- <SingleJobListing v-for="job in jobs.slice(limit || job.length)" :key="job.id" :job="job" /> -->
-
                 <!-- using reactive -->
-                <SingleJobListing v-for="job in state.jobs.slice( limit || state.jobs.length)" :key="job.id" :job="job" />
+                <FrappeSingleJobListing v-for="job in state.jobs.slice( limit || state.jobs.length)" :key="job.name" :job="job" />
             </div>
         </div>
     </section>

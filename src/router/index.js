@@ -5,7 +5,10 @@ import JobsView from "@/views/JobsView.vue";
 import JobView from "@/views/JobView.vue";
 import EditJobView from "@/views/EditJobView.vue";
 import AddJobView from "@/views/AddJobView.vue";
-import AddFrappeJobs from "@/views/AddFrappeJobs.vue";
+import AddFrappeJobs from "@/views/Frappe Job View/FrappeAddJob.vue";
+import FrappeAllJobsListing from "@/components/Frappe Job Components/FrappeAllJobsListing.vue";
+import FrappeJobView from "@/views/Frappe Job View/FrappeJobView.vue";
+import FrappeEditJob from "@/views/Frappe Job View/FrappeEditJob.vue";
 
 const  router = createRouter({
     history:createWebHistory(import.meta.env.Base_URL),
@@ -31,14 +34,29 @@ const  router = createRouter({
             component:AddJobView
         },
         {
+            path:'/jobs/edit/:id',
+            name:'edit-job',
+            component:EditJobView
+        },
+        {
             path:'/jobs/add-frappe-jobs',
             name:'add-frappe-jobs',
             component:AddFrappeJobs
         },
         {
-            path:'/jobs/edit/:id',
-            name:'edit-job',
-            component:EditJobView
+            path:'/jobs/view-frappe-all-jobs',
+            name:'view-frappe-all-jobs',
+            component:FrappeAllJobsListing
+        },
+        {
+            path:'/frappe-jobs/:name',
+            name:'frappe-jobs',
+            component:FrappeJobView
+        },
+        {
+            path:'/frappe-jobs-edit/:name',
+            name:'frappe-jobs-edit',
+            component:FrappeEditJob
         },
         {
             path:'/:catchAll(.*)',

@@ -19,7 +19,7 @@
       "type": "Full-Time",
       "location": "Miami, FL",
       "description": "Join our team as a Front-End Developer in sunny Miami, FL. We are looking for a motivated individual with a passion for crafting beautiful and responsive web applications. Experience with UI/UX design principles and a strong attention to detail are highly desirable.",
-      "salary": "$70K - $80K",
+      "salary": "Over $200K",
       "company": {
         "name": "Veneer Solutions",
         "description": "Veneer Solutions is a creative agency specializing in digital design and development. Our team is dedicated to pushing the boundaries of creativity and innovation to deliver exceptional results for our clients.",
@@ -82,48 +82,6 @@
         "description": "Port Solutions is a leading technology company specializing in software development and digital marketing. We are committed to providing our clients with cutting-edge solutions and our employees with a supportive and rewarding work environment.",
         "contactEmail": "contact@ipsumlorem.com",
         "contactPhone": "555-555-5555"
-      }
-    },
-    {
-      "id": "858d",
-      "title": "Frappe/ERPNext Developer",
-      "type": "Full-Time",
-      "location": "Remote",
-      "description": "Any One Can Apply",
-      "salary": "$50K - $60K",
-      "company": {
-        "name": "Frappe",
-        "description": "Open Source",
-        "contactEmail": "anwar@standardtouch.com",
-        "contactPhone": "9538405805"
-      }
-    },
-    {
-      "id": "0efc",
-      "title": "Frappe/ERPNext Developer",
-      "type": "Full-Time",
-      "location": "Remote",
-      "description": "Any One Can Apply",
-      "salary": "$50K - $60K",
-      "company": {
-        "name": "Frappe",
-        "description": "Open Source",
-        "contactEmail": "anwar@standardtouch.com",
-        "contactPhone": "9538405805"
-      }
-    },
-    {
-      "id": "2001",
-      "title": "Frappe/ERPNext Developer",
-      "type": "Full-Time",
-      "location": "Remote",
-      "description": "Any One Can Apply",
-      "salary": "$50K - $60K",
-      "company": {
-        "name": "Frappe",
-        "description": "Open Source",
-        "contactEmail": "anwar@standardtouch.com",
-        "contactPhone": "9538405805"
       }
     }
   ]
