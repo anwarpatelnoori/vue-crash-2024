@@ -83,7 +83,7 @@ onMounted(async () => {
         // dynamic api from local storage
         const call_frappe_api = frappe_api_key_2()
         // get_company
-        const company_response = await call_frappe_api.get(`/resource/Company?limit_start=1&amp;limit=1`)
+        const company_response = await call_frappe_api.get(`/resource/Company`)
         let company_name = company_response.data.data[0].name;
         form.company = company_response.data.data[0].name;
         const company_details_response = await call_frappe_api.get(`/resource/Company?filters=[["name","=","${company_name}"]]&fields=${company_fields_json}`)

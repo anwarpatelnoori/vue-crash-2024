@@ -105,7 +105,7 @@ onMounted(async () => {
   try {
     const call_frappe_api = frappe_api_key_2()
     // Get Company
-    const company_response = await call_frappe_api.get(`/resource/Company?limit_start=1&amp;limit=1`)
+    const company_response = await call_frappe_api.get(`/resource/Company`)
     let company_name = company_response.data.data[0].name;
     form.company = company_response.data.data[0].name;
     // console.log(company_name);
