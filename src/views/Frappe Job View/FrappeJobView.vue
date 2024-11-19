@@ -39,7 +39,7 @@ const deleteJob = async () => {
     }
 
 }
-const job_fields = ["name", "employment_type", "designation", "job_title", "description", "location", "lower_range", "upper_range", "company", "custom_company_email", "custom_company_phone", "custom_company_description"];
+const job_fields = ["name", "employment_type", "designation", "job_title", "description", "location", "lower_range", "upper_range"];
 const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
 const company_fields = ["email", "phone_no", "company_description"]
 const company_fields_json = encodeURIComponent(JSON.stringify(company_fields));
@@ -95,7 +95,7 @@ onMounted(async () => {
                     <div class="bg-white p-6 rounded-lg shadow-md text-center md:text-left">
                         <div class="text-gray-500 mb-4">{{ state.job.employment_type }}</div>
                         <h1 class="text-3xl font-bold mb-4">{{ state.job.job_title }}</h1>
-                        <p class="font-bold mb-2">Department: {{ state.job.designation }}</p>
+                        <p class="font-bold mb-2">Designation: {{ state.job.designation }}</p>
                         <div class="text-gray-500 mb-4 flex align-middle justify-center md:justify-start">
                             <i class="fa-solid fa-location-dot text-lg text-orange-700 mr-2"></i>
                             <p class="text-orange-700">{{ state.job.location }}</p>

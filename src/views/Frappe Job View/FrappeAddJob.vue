@@ -101,6 +101,7 @@ const effectiveLocation = computed({
   }
 });
 const branches = ref([]);
+const designations = ref([])
 onMounted(async () => {
   try {
     const call_frappe_api = frappe_api_key_2()
@@ -123,6 +124,12 @@ onMounted(async () => {
     branches.value.push('Create New Branch');
     // console.log('Array Branch', branches);
     // console.log(all_branch);
+
+    // getting designations of company
+    const all_designation_response = await call_frappe_api.get(`/resource/Designation?as_dict=False`);
+    const all_designation = all_designation_response.data.data;
+    designations.value = all_designation.map(designation => designation[0]);
+    designations.value.push('Create New Designation');
   } catch (error) {
     console.error('Error fetching job', error);
   }
@@ -150,42 +157,15 @@ onMounted(async () => {
               class="border rounded w-full py-2 px-3 mb-2" placeholder="eg. Frappe/ERPNext Developer" required />
           </div>
           <div class="mb-4">
-            <label for="type" class="block text-gray-700 font-bold mb-2">Department</label>
+            <label for="designation" class="block text-gray-700 font-bold mb-2">Designation</label>
             <select v-model="form.designation" id="designation" name="designation"
-              class="border rounded w-full py-2 px-3" required>
-              <option value="Accountant">Accountant</option>
-              <option value="Administrative Assistant">Administrative Assistant</option>
-              <option value="Administrative Officer">Administrative Officer</option>
-              <option value="Analyst">Analyst</option>
-              <option value="Associate">Associate</option>
-              <option value="Business Analyst">Business Analyst</option>
-              <option value="Business Development Manager">Business Development Manager</option>
-              <option value="Consultant">Consultant</option>
-              <option value="Chief Executive Officer">Chief Executive Officer</option>
-              <option value="Chief Financial Officer">Chief Financial Officer</option>
-              <option value="Chief Operating Officer">Chief Operating Officer</option>
-              <option value="Chief Technology Officer">Chief Technology Officer</option>
-              <option value="Customer Service Representative">Customer Service Representative</option>
-              <option value="Designer">Designer</option>
-              <option value="Engineer">Engineer</option>
-              <option value="Executive Assistant">Executive Assistant</option>
-              <option value="Finance Manager">Finance Manager</option>
-              <option value="HR Manager">HR Manager</option>
-              <option value="Head of Marketing and Sales">Head of Marketing and Sales</option>
-              <option value="Manager">Manager</option>
-              <option value="Managing Director">Managing Director</option>
-              <option value="Marketing Manager">Marketing Manager</option>
-              <option value="Marketing Specialist">Marketing Specialist</option>
-              <option value="President">President</option>
-              <option value="Product Manager">Product Manager</option>
-              <option value="Project Manager">Project Manager</option>
-              <option value="Researcher">Researcher</option>
-              <option value="Sales Representative">Sales Representative</option>
-              <option value="Secretary">Secretary</option>
-              <option value="Software Developer">Software Developer</option>
-              <option value="Vice President">Vice President</option>
+              class="border rounded w-full py-2 px-3 text-gray-700" required>
+              <option v-for="designation in designations" :key="designation" :value="designation">
+                {{ designation }}
+              </option>
             </select>
           </div>
+
 
           <div class="mb-4">
             <label for="description" class="block text-gray-700 font-bold mb-2">Description</label>
