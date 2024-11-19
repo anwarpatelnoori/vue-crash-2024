@@ -14,8 +14,8 @@ const isActiveLink = (routePath) => {
         <div class="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
           <!-- Logo -->
           <RouterLink class="flex flex-shrink-0 items-center mr-4" to="/">
-            <img class="h-10 w-auto" v-bind:src="logo" alt="Vue Jobs" />
-            <span class="hidden md:block text-white text-2xl font-bold ml-2">Vue Jobs</span>
+            <img class="h-10 w-auto" v-bind:src="logo" alt="Frappe" />
+            <span class="hidden md:block text-white text-2xl font-bold ml-2">Frappe Jobs</span>
           </RouterLink>
           <div class="md:ml-auto">
             <div class="flex space-x-2">
@@ -23,19 +23,23 @@ const isActiveLink = (routePath) => {
                 :class="[isActiveLink('/') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
                 Home
               </RouterLink>
-              <RouterLink to="/jobs"
+              <RouterLink to="/add-frappe-api"
+                :class="[isActiveLink('/add-frappe-api') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
+                Add Frappe API
+              </RouterLink>
+              <!-- <RouterLink to="/jobs"
                 :class="[isActiveLink('/jobs') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
                 Jobs
               </RouterLink>
               <RouterLink to="/jobs/add"
                 :class="[isActiveLink('/jobs/add') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
-                AddJob</RouterLink>
-              <RouterLink to="/jobs/add-frappe-jobs"
-                :class="[isActiveLink('/jobs/add-frappe-jobs') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
-                Add Frappe Job</RouterLink>
+                AddJob</RouterLink> -->
               <RouterLink to="/jobs/view-frappe-all-jobs"
                 :class="[isActiveLink('/jobs/view-frappe-all-jobs') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
                 View Frappe Jobs</RouterLink>
+              <RouterLink to="/jobs/add-frappe-jobs"
+                :class="[isActiveLink('/jobs/add-frappe-jobs') ? 'bg-green-900' : 'hover:bg-gray-900', 'text-white', 'px-3', 'py-2', 'rounded-md']">
+                Add Frappe Job</RouterLink>
             </div>
           </div>
         </div>

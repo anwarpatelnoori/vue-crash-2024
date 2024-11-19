@@ -4,8 +4,8 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 import { reactive, onMounted } from 'vue';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import frappe_api_key from '@/utils/frappe_api_keys';
 
-import axios from 'axios';
 
 const route = useRoute();
 const router = useRouter()
@@ -20,16 +20,11 @@ const state = reactive({
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(value);
 };
-const headers = {
-    'Authorization': 'Token 4caa1fb44962403:c9ffde8c1961297',
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-};
 const deleteJob = async () => {
     try {
         const confirm = window.confirm('Are you sure want to delete the job')
         if (confirm) {
-            await axios.delete(`http://127.0.0.1:8001/api/resource/Job Opening/${jobId}`,{ headers })
+            await frappe_api_key.delete(`/Job Opening/${jobId}`)
             toast.success('Job Deleted Successfully')
             router.push('/jobs/view-frappe-all-jobs')
         }
@@ -43,7 +38,7 @@ const job_fields = ["name", "employment_type", "designation", "job_title", "desc
 const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
 onMounted(async () => {
     try {
-        const response = await axios.get(`http://localhost:8001/api/resource/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`, { headers })
+        const response = await frappe_api_key.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
         if (response.data.data.length > 0) {
             state.job = response.data.data[0]
         }
@@ -69,15 +64,6 @@ onMounted(async () => {
     }
 })
 </script>
-
-<style>
-  /* CSS for your component, including external styles */
-  @import "https://cdn.quilljs.com/1.3.6/quill.snow.css";
-  .ql-editor.read-mode ol {
-    list-style-type: disc !important;
-    padding-left: 40px;
-}
-</style>
 <template>
     <FrappeBackButton />
     <section v-if="!state.isLoading" class="bg-green-50">
@@ -158,3 +144,12 @@ onMounted(async () => {
         <PulseLoader />
     </div>
 </template>
+
+<style>
+  /* CSS for your component, including external styles */
+  @import "https://cdn.quilljs.com/1.3.6/quill.snow.css";
+  .ql-editor.read-mode ol {
+    list-style-type: disc !important;
+    padding-left: 40px;
+}
+</style>

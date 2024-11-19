@@ -5,9 +5,10 @@ import router from '@/router';
 import { reactive, onMounted } from 'vue';
 import { useRoute, } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import axios from 'axios';
-import { QuillEditor } from '@vueup/vue-quill';
+import frappe_api_key from '@/utils/frappe_api_keys';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
+import { QuillEditor } from '@vueup/vue-quill';
 
 const route = useRoute()
 const jobId = route.params.name
@@ -55,18 +56,10 @@ const handleSubmit = async () => {
         publish_salary_range: 1,
         salary_per: 'Year'
     };
-    // Log the headers
-    const headers = {
-        'Authorization': 'Token 4caa1fb44962403:c9ffde8c1961297',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    };
-    // console.log("Headers:", headers);
-
     try {
         console.log('Inisde Try');
 
-        const response = await axios.put(`http://localhost:8001/api/resource/Job Opening/${jobId}`, updateJob, { headers });
+        const response = await frappe_api_key.put(`/Job Opening/${jobId}`, updateJob);
         router.push(`/frappe-jobs/${response.data.data.name}`)
         // @todo -show toast
         toast.success('Job Updated Successfully');
@@ -81,12 +74,7 @@ const job_fields = ["name", "employment_type", "designation", "job_title", "desc
 const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
 onMounted(async () => {
     try {
-        const headers2 = {
-            'Authorization': 'Token 4caa1fb44962403:c9ffde8c1961297',
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        };
-        const response = await axios.get(`http://localhost:8001/api/resource/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`, { headers2 })
+        const response = await frappe_api_key.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
         state.job = response.data.data[0]
 
         // Populate to inputs

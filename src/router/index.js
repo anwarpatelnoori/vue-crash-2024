@@ -9,6 +9,7 @@ import AddFrappeJobs from "@/views/Frappe Job View/FrappeAddJob.vue";
 import FrappeAllJobsListing from "@/components/Frappe Job Components/FrappeAllJobsListing.vue";
 import FrappeJobView from "@/views/Frappe Job View/FrappeJobView.vue";
 import FrappeEditJob from "@/views/Frappe Job View/FrappeEditJob.vue";
+import FrappeAddApi from "@/components/Frappe Job Components/FrappeAddApi.vue";
 
 const  router = createRouter({
     history:createWebHistory(import.meta.env.Base_URL),
@@ -57,6 +58,11 @@ const  router = createRouter({
             path:'/frappe-jobs-edit/:name',
             name:'frappe-jobs-edit',
             component:FrappeEditJob
+        },
+        {
+            path:'/add-frappe-api',
+            name:'add-frappe-api',
+            component:FrappeAddApi
         },
         {
             path:'/:catchAll(.*)',

@@ -4,7 +4,7 @@
 import router from '@/router';
 import { reactive, computed, onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import axios from 'axios';
+import frappe_api_key from '@/utils/frappe_api_keys';
 import { data } from 'autoprefixer';
 
 const form = reactive({
@@ -54,33 +54,21 @@ const handleSubmit = async () => {
     branch: newJob.location
   }
 
-  // Log the endpoint
-  // console.log("Endpoint:", 'http://localhost:8001/api/resource/Job Opening');
-
-  // Log the payload
-  console.log("Payload (newJob):", newJob);
-
-  // Log the headers
-  const headers = {
-    'Authorization': 'Token 4caa1fb44962403:c9ffde8c1961297',
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  };
-  console.log("Headers:", headers);
-
+  // Log the new job
+  console.log("New Job (newJob):", newJob);
   try {
-    const branch_response = await axios.get(`http://localhost:8001/api/resource/Branch?filters=[["branch","=","${check_branch.branch}"]]`, { headers });
+    const branch_response = await frappe_api_key.get(`/Branch?filters=[["branch","=","${check_branch.branch}"]]`);
     console.log('Branch Response', branch_response);
     if (branch_response.data.data == 0) {
       console.log("No branch founded");
       const new_branch = {
         branch: newJob.location
       }
-      const post_new_branch = await axios.post('http://localhost:8001/api/resource/Branch', new_branch, { headers });
+      const post_new_branch = await frappe_api_key.post('/Branch', new_branch);
       console.log(post_new_branch);
     }
 
-    const frappe_response = await axios.post('http://localhost:8001/api/resource/Job Opening', newJob, { headers });
+    const frappe_response = await frappe_api_key.post('/Job Opening', newJob);
 
     console.log('Frappe Response:', frappe_response);
     router.push(`/frappe-jobs/${frappe_response.data.data.name}`);
@@ -107,12 +95,7 @@ const effectiveLocation = computed({
 const branches = ref([]);
 onMounted(async () => {
   try {
-    const headers = {
-      'Authorization': 'Token 4caa1fb44962403:c9ffde8c1961297',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    };
-    const all_branch_response = await axios.get(`http://localhost:8001/api/resource/Branch?as_dict=False`, { headers })
+    const all_branch_response = await frappe_api_key.get(`/Branch?as_dict=False`)
     const all_branch = all_branch_response.data.data
     branches.value = all_branch.map(branch => branch[0])
     branches.value.push('Create New Branch');
@@ -202,7 +185,7 @@ onMounted(async () => {
             <input v-model="form.upper_range" type="text" id="upper_range" name="upper_range"
               class="border rounded w-full py-2 px-3 mb-2" placeholder="eg. Beautiful Apartment In Miami" required />
           </div>
-<!-- 
+          <!-- 
           <div class="mb-4">
             <label class="block text-gray-700 font-bold mb-2">
               Location <small class=" text-gray-700 font-bold mb-1">(Will Create Branch in ERPNext)</small>
