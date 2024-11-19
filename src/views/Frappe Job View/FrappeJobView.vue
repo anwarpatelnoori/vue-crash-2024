@@ -5,6 +5,7 @@ import { reactive, onMounted } from 'vue';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import frappe_api_key from '@/utils/frappe_api_keys';
+import frappe_api_key_2 from '@/utils/frappe_api_keys';
 
 
 const route = useRoute();
@@ -18,13 +19,17 @@ const state = reactive({
     isLoading: true
 })
 const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(value);
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(value);
 };
 const deleteJob = async () => {
     try {
         const confirm = window.confirm('Are you sure want to delete the job')
         if (confirm) {
-            await frappe_api_key.delete(`/Job Opening/${jobId}`)
+            // hardcode api
+            // await frappe_api_key.delete(`/Job Opening/${jobId}`)
+            // dynamic api from local storage
+            const call_frappe_api = frappe_api_key_2()
+            await call_frappe_api.delete(`/Job Opening/${jobId}`)
             toast.success('Job Deleted Successfully')
             router.push('/jobs/view-frappe-all-jobs')
         }
@@ -38,7 +43,13 @@ const job_fields = ["name", "employment_type", "designation", "job_title", "desc
 const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
 onMounted(async () => {
     try {
-        const response = await frappe_api_key.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
+        // hardcode api
+        // const response = await frappe_api_key.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
+
+        // dynamic api from local storage
+        const call_frappe_api = frappe_api_key_2()
+        const response = await call_frappe_api.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
+
         if (response.data.data.length > 0) {
             state.job = response.data.data[0]
         }
@@ -146,9 +157,10 @@ onMounted(async () => {
 </template>
 
 <style>
-  /* CSS for your component, including external styles */
-  @import "https://cdn.quilljs.com/1.3.6/quill.snow.css";
-  .ql-editor.read-mode ol {
+/* CSS for your component, including external styles */
+@import "https://cdn.quilljs.com/1.3.6/quill.snow.css";
+
+.ql-editor.read-mode ol {
     list-style-type: disc !important;
     padding-left: 40px;
 }

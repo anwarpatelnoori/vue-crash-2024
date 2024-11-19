@@ -3,8 +3,7 @@ import { reactive, defineProps, onMounted } from 'vue';
 import FrappeSingleJobListing from './FrappeSingleJobListing.vue';
 import { RouterLink } from 'vue-router';
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-import frappe_api_key from '@/utils/frappe_api_keys';
-// import frappe_api_key_2 from '@/utils/frappe_api_key';
+import frappe_api_key_2 from '@/utils/frappe_api_keys';
 
 // Reactive state
 const state = reactive({
@@ -31,10 +30,9 @@ const job_fields_json = encodeURIComponent(JSON.stringify(job_fields));
 
 // Fetch jobs data on component mount
 onMounted(async () => {
-    const user_frappe_api = JSON.parse(localStorage.getItem('formData'));
-    console.log('From User',user_frappe_api);
+    const call_frappe_api = frappe_api_key_2()    
     try {
-        const response = await frappe_api_key.get(`/Job Opening?fields=${job_fields_json}`);
+        const response = await call_frappe_api.get(`/Job Opening?fields=${job_fields_json}`);
         state.jobs = response.data.data;
     } catch (error) {
         console.error('Error fetching jobs:', error);

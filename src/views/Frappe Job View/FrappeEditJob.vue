@@ -5,10 +5,10 @@ import router from '@/router';
 import { reactive, onMounted } from 'vue';
 import { useRoute, } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import frappe_api_key from '@/utils/frappe_api_keys';
+// import frappe_api_key from '@/utils/frappe_api_keys';
+import frappe_api_key_2 from '@/utils/frappe_api_keys';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
-import { QuillEditor } from '@vueup/vue-quill';
 
 const route = useRoute()
 const jobId = route.params.name
@@ -58,8 +58,12 @@ const handleSubmit = async () => {
     };
     try {
         console.log('Inisde Try');
+        // hardcode api
+        // const response = await frappe_api_key.put(`/Job Opening/${jobId}`, updateJob);
 
-        const response = await frappe_api_key.put(`/Job Opening/${jobId}`, updateJob);
+        // dynamic api from local storage
+        const call_frappe_api = frappe_api_key_2()
+        const response = await call_frappe_api.put(`/Job Opening/${jobId}`, updateJob);
         router.push(`/frappe-jobs/${response.data.data.name}`)
         // @todo -show toast
         toast.success('Job Updated Successfully');
@@ -74,7 +78,10 @@ const job_fields = ["name", "employment_type", "designation", "job_title", "desc
 const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
 onMounted(async () => {
     try {
-        const response = await frappe_api_key.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
+        // const response = await frappe_api_key.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
+        // dynamic api from local storage
+        const call_frappe_api = frappe_api_key_2()
+        const response = await call_frappe_api.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
         state.job = response.data.data[0]
 
         // Populate to inputs

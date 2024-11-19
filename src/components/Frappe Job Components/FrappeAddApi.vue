@@ -17,9 +17,9 @@ const submitForm = () => {
 
     // Store data in local storage
     const formData = {
-        websiteLink: websiteLink.value,
-        apiKey: apiKey.value,
-        token: token.value,
+        frappe_website: websiteLink.value,
+        api_key: apiKey.value,
+        api_seceret_key: token.value,
     };
     localStorage.setItem('formData', JSON.stringify(formData));
 

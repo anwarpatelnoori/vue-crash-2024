@@ -5,6 +5,7 @@ import router from '@/router';
 import { reactive, computed, onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
 import frappe_api_key from '@/utils/frappe_api_keys';
+import frappe_api_key_2 from '@/utils/frappe_api_keys';
 import { data } from 'autoprefixer';
 
 const form = reactive({
@@ -57,18 +58,25 @@ const handleSubmit = async () => {
   // Log the new job
   console.log("New Job (newJob):", newJob);
   try {
-    const branch_response = await frappe_api_key.get(`/Branch?filters=[["branch","=","${check_branch.branch}"]]`);
+    // hardcode api
+    // const branch_response = await frappe_api_key.get(`/Branch?filters=[["branch","=","${check_branch.branch}"]]`);
+    // console.log('Branch Response', branch_response);
+
+    // dynamic api from local storage
+    const call_frappe_api = frappe_api_key_2()
+    const branch_response = await call_frappe_api.get(`/Branch?filters=[["branch","=","${check_branch.branch}"]]`);
     console.log('Branch Response', branch_response);
+
     if (branch_response.data.data == 0) {
       console.log("No branch founded");
       const new_branch = {
         branch: newJob.location
       }
-      const post_new_branch = await frappe_api_key.post('/Branch', new_branch);
+      const post_new_branch = await call_frappe_api.post('/Branch', new_branch);
       console.log(post_new_branch);
     }
 
-    const frappe_response = await frappe_api_key.post('/Job Opening', newJob);
+    const frappe_response = await call_frappe_api.post('/Job Opening', newJob);
 
     console.log('Frappe Response:', frappe_response);
     router.push(`/frappe-jobs/${frappe_response.data.data.name}`);
@@ -95,7 +103,8 @@ const effectiveLocation = computed({
 const branches = ref([]);
 onMounted(async () => {
   try {
-    const all_branch_response = await frappe_api_key.get(`/Branch?as_dict=False`)
+    const call_frappe_api = frappe_api_key_2()
+    const all_branch_response = await call_frappe_api.get(`/Branch?as_dict=False`)
     const all_branch = all_branch_response.data.data
     branches.value = all_branch.map(branch => branch[0])
     branches.value.push('Create New Branch');

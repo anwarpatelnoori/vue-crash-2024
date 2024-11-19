@@ -12,32 +12,17 @@ import FrappeEditJob from "@/views/Frappe Job View/FrappeEditJob.vue";
 import FrappeAddApi from "@/components/Frappe Job Components/FrappeAddApi.vue";
 
 const  router = createRouter({
-    history:createWebHistory(import.meta.env.Base_URL),
+    history:createWebHistory('/'),
     routes:[
         {
             path:'/',
             name:'home',
+            component:FrappeAddApi
+        },
+        {
+            path:'/home',
+            name:'home-page',
             component:HomeView
-        },
-        {
-            path:'/jobs',
-            name:'jobs',
-            component:JobsView
-        },
-        {
-            path:'/jobs/:id',
-            name:'job',
-            component:JobView
-        },
-        {
-            path:'/jobs/add',
-            name:'add-job',
-            component:AddJobView
-        },
-        {
-            path:'/jobs/edit/:id',
-            name:'edit-job',
-            component:EditJobView
         },
         {
             path:'/jobs/add-frappe-jobs',
@@ -60,16 +45,32 @@ const  router = createRouter({
             component:FrappeEditJob
         },
         {
-            path:'/add-frappe-api',
-            name:'add-frappe-api',
-            component:FrappeAddApi
-        },
-        {
             path:'/:catchAll(.*)',
             name:'not-found',
             component:NotFoundView
 
         },
+        {
+            path:'/jobs',
+            name:'jobs',
+            component:JobsView
+        },
+        {
+            path:'/jobs/:id',
+            name:'job',
+            component:JobView
+        },
+        {
+            path:'/jobs/add',
+            name:'add-job',
+            component:AddJobView
+        },
+        {
+            path:'/jobs/edit/:id',
+            name:'edit-job',
+            component:EditJobView
+        },
+        
     ]
 })
 
