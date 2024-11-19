@@ -8,6 +8,7 @@ import { useToast } from 'vue-toastification';
 // import frappe_api_key from '@/utils/frappe_api_keys';
 import frappe_api_key_2 from '@/utils/frappe_api_keys';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import { QuillEditor } from '@vueup/vue-quill';
 
 
 const route = useRoute()
@@ -16,19 +17,19 @@ const jobId = route.params.name
 const form = reactive({
     employment_type: 'Full-Time',
     job_title: '',
-    description: '',
     designation: '',
     lower_range: 300000,
     upper_range: 500000,
-    location: 'Gulbarga',
-    company: 'StandardTouch (Demo)',
-    custom_company_description: 'Open Source',
-    custom_company_email: 'anwarpatelrazvi@gmail.com',
-    custom_company_phone: '9538405805',
+    location: '',
+    company: '',
+    company_description: '',
+    company_email: '',
+    company_phone: '',
     publish: 1,
     publish_salary_range: 1,
     salary_per: 'Year'
 })
+
 
 const state = reactive({
     job: {},
@@ -43,15 +44,13 @@ const handleSubmit = async () => {
         job_title: form.job_title,
         employment_type: form.employment_type,
         designation: form.designation,
-        description: form.description,
         location: form.location,
-        description: form.description,
         lower_range: form.lower_range,
         upper_range: form.upper_range,
         company: form.company,
-        custom_company_description: form.custom_company_description,
-        custom_company_email: form.custom_company_email,
-        custom_company_phone: form.custom_company_phone,
+        company_description: form.company_description,
+        company_email: form.company_email,
+        company_phone: form.company_phone,
         publish: 1,
         publish_salary_range: 1,
         salary_per: 'Year'
@@ -63,7 +62,7 @@ const handleSubmit = async () => {
 
         // dynamic api from local storage
         const call_frappe_api = frappe_api_key_2()
-        const response = await call_frappe_api.put(`/Job Opening/${jobId}`, updateJob);
+        const response = await call_frappe_api.put(`/resource/Job Opening/${jobId}`, updateJob);
         router.push(`/frappe-jobs/${response.data.data.name}`)
         // @todo -show toast
         toast.success('Job Updated Successfully');
@@ -74,14 +73,25 @@ const handleSubmit = async () => {
         toast.error('Job Was Not Updated');
     }
 };
-const job_fields = ["name", "employment_type", "designation", "job_title", "description", "location", "lower_range", "upper_range", "company", "custom_company_email", "custom_company_phone", "custom_company_description"];
+const job_fields = ["name", "employment_type", "designation", "job_title", "description", "location", "lower_range", "upper_range", "company"];
 const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
+const company_fields = ["email", "phone_no", "company_description"]
+const company_fields_json = encodeURIComponent(JSON.stringify(company_fields));
 onMounted(async () => {
     try {
         // const response = await frappe_api_key.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
         // dynamic api from local storage
         const call_frappe_api = frappe_api_key_2()
-        const response = await call_frappe_api.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
+        // get_company
+        const company_response = await call_frappe_api.get(`/resource/Company?limit_start=1&amp;limit=1`)
+        let company_name = company_response.data.data[0].name;
+        form.company = company_response.data.data[0].name;
+        const company_details_response = await call_frappe_api.get(`/resource/Company?filters=[["name","=","${company_name}"]]&fields=${company_fields_json}`)
+        form.company_email = company_details_response.data.data[0]['email'];
+        form.company_phone = company_details_response.data.data[0]['phone_no']
+        form.company_description = company_details_response.data.data[0]['company_description']
+
+        const response = await call_frappe_api.get(`/resource/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
         state.job = response.data.data[0]
 
         // Populate to inputs
@@ -172,19 +182,6 @@ onMounted(async () => {
                         </select>
                     </div>
                     <div class="mb-4">
-                        <label for="description" class="block text-gray-700 font-bold mb-2">Description</label>
-                        <textarea v-model="form.description" id="description" name="description"
-                            class="border rounded w-full py-2 px-3" rows="4"
-                            placeholder="Add any job duties, expectations, requirements, etc"></textarea>
-                    </div>
-                    <!-- <div class="mb-4" v-html="form.description"></div> -->
-                    <!-- <div>
-                        <label class="block text-gray-700 font-bold mb-2" for="description">Description <small
-                                class=" text-gray-700 font-bold mb-1">(Please copy description from the above and past
-                                it below)</small></label>
-                        <QuillEditor ref="quillEditorRef" v-model="form.description" />
-                    </div> -->
-                    <div class="mb-4">
                         <label for="lower_range" class="block text-gray-700 font-bold mb-2">Min Salary</label>
                         <input v-model="form.lower_range" type="text" id="lower_range" name="lower_range"
                             class="border rounded w-full py-2 px-3 mb-2" placeholder="eg. Beautiful Apartment In Miami"
@@ -212,24 +209,26 @@ onMounted(async () => {
                         <input v-model="form.company" type="text" id="company" name="company"
                             class="border rounded w-full py-2 px-3" placeholder="Company Name" readonly />
                     </div>
-
                     <div class="mb-4">
                         <label for="company_description" class="block text-gray-700 font-bold mb-2">Company
                             Description</label>
-                        <textarea v-model="form.custom_company_description" id="company_description"
-                            name="company_description" class="border rounded w-full py-2 px-3" rows="4"
-                            placeholder="What does your company do?" readonly></textarea>
+                        <!-- Separate container for the HTML content -->
+                        <div id="company_description" class="border rounded w-full py-2 px-3"
+                            style="min-height: 100px; background-color: #fff;">
+                            <div v-html="form.company_description"></div>
+                        </div>
                     </div>
+
 
                     <div class="mb-4">
                         <label for="contact_email" class="block text-gray-700 font-bold mb-2">Contact Email</label>
-                        <input v-model="form.custom_company_email" type="email" id="contact_email" name="contact_email"
+                        <input v-model="form.company_email" type="email" id="contact_email" name="contact_email"
                             class="border rounded w-full py-2 px-3" placeholder="Email address for applicants" required
                             readonly />
                     </div>
                     <div class="mb-4">
                         <label for="contact_phone" class="block text-gray-700 font-bold mb-2">Contact Phone</label>
-                        <input v-model="form.custom_company_phone" type="tel" id="contact_phone" name="contact_phone"
+                        <input v-model="form.company_phone" type="tel" id="contact_phone" name="contact_phone"
                             class="border rounded w-full py-2 px-3" placeholder="Optional phone for applicants"
                             readonly />
                     </div>

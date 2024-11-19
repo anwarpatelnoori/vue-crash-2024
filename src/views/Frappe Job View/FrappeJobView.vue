@@ -29,7 +29,7 @@ const deleteJob = async () => {
             // await frappe_api_key.delete(`/Job Opening/${jobId}`)
             // dynamic api from local storage
             const call_frappe_api = frappe_api_key_2()
-            await call_frappe_api.delete(`/Job Opening/${jobId}`)
+            await call_frappe_api.delete(`/resource/Job Opening/${jobId}`)
             toast.success('Job Deleted Successfully')
             router.push('/jobs/view-frappe-all-jobs')
         }
@@ -41,6 +41,8 @@ const deleteJob = async () => {
 }
 const job_fields = ["name", "employment_type", "designation", "job_title", "description", "location", "lower_range", "upper_range", "company", "custom_company_email", "custom_company_phone", "custom_company_description"];
 const job_fields_json = encodeURIComponent(JSON.stringify(job_fields))
+const company_fields = ["email", "phone_no", "company_description"]
+const company_fields_json = encodeURIComponent(JSON.stringify(company_fields));
 onMounted(async () => {
     try {
         // hardcode api
@@ -48,7 +50,16 @@ onMounted(async () => {
 
         // dynamic api from local storage
         const call_frappe_api = frappe_api_key_2()
-        const response = await call_frappe_api.get(`/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
+        // Get Company
+        const company_response = await call_frappe_api.get(`/resource/Company?limit_start=1&amp;limit=1`)
+        const company_name = company_response.data.data[0].name;
+        const company_details_response = await call_frappe_api.get(`/resource/Company?filters=[["name","=","${company_name}"]]&fields=${company_fields_json}`)
+        state.company = company_response.data.data[0].name;
+        state.company_email = company_details_response.data.data[0]['email'];
+        state.company_phone = company_details_response.data.data[0]['phone_no']
+        state.company_description = company_details_response.data.data[0]['company_description']
+        // Job Opening Details
+        const response = await call_frappe_api.get(`/resource/Job Opening?filters=[["name","=","${jobId}"]]&fields=${job_fields_json}`)
 
         if (response.data.data.length > 0) {
             state.job = response.data.data[0]
@@ -116,23 +127,22 @@ onMounted(async () => {
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-xl font-bold mb-6">Company Info</h3>
 
-                        <h2 class="text-2xl">{{ state.job.company }}</h2>
+                        <h2 class="text-2xl">{{ state.company }}</h2>
 
-                        <p class="my-2">
-                            {{ state.job.custom_company_description }}
-                        </p>
+                        <p class="my-2" v-html="state.company_description"></p>
+
 
                         <hr class="my-4" />
 
                         <h3 class="text-xl">Contact Email:</h3>
 
                         <p class="my-2 bg-green-100 p-2 font-bold">
-                            {{ state.job.custom_company_email }}
+                            {{ state.company_email }}
                         </p>
 
                         <h3 class="text-xl">Contact Phone:</h3>
 
-                        <p class="my-2 bg-green-100 p-2 font-bold">{{ state.job.custom_company_phone }}</p>
+                        <p class="my-2 bg-green-100 p-2 font-bold">{{ state.company_phone }}</p>
                     </div>
 
                     <!-- Manage -->

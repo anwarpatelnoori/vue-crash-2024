@@ -1,17 +1,20 @@
 <script setup>
 import { ref } from 'vue';
+import frappe_api_key_2 from '@/utils/frappe_api_keys';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast()
 const websiteLink = ref('');
 const apiKey = ref('');
 const token = ref('');
 const websiteLinkError = ref(false);
 
 const validateWebsiteLink = () => {
-    const requiredString = 'api/resource';
-    websiteLinkError.value = !websiteLink.value.includes(requiredString);
+    const requiredString = '/api';
+    websiteLinkError.value = !websiteLink.value.endsWith(requiredString);
 };
 
-const submitForm = () => {
+const submitForm = async () => {
     validateWebsiteLink();
     if (websiteLinkError.value) return;
 
@@ -22,13 +25,24 @@ const submitForm = () => {
         api_seceret_key: token.value,
     };
     localStorage.setItem('formData', JSON.stringify(formData));
+    try {
+        const call_frappe_api = frappe_api_key_2()
+        const response = await call_frappe_api.get('/method/frappe.auth.get_logged_user')
+        console.log(response);
+        
+        if (response.status==200){
+            toast.success(`Welcome ${response.data.message} your Frappe API is verified`)
+        }
+    } 
+    catch (error) {
+        console.log('Error Fetching Job', error);
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+        }
+    }
 
-    // Display success message
-    alert('Form submitted and data saved to local storage!');
-    // console.log(formData);
-
-    // const user_frappe_api = JSON.parse(localStorage.getItem('formData'));
-    // console.log(user_frappe_api);
 
 };
 </script>
@@ -37,11 +51,14 @@ const submitForm = () => {
     <div class="container">
         <form @submit.prevent="submitForm">
             <div class="form-group">
-                <label for="website-link" class="label">Website Link</label>
+                <label for="website-link" class="label">Your Frappe API Link</label>
                 <input id="website-link" v-model="websiteLink" class="input" type="url" placeholder="Enter website link"
                     :class="{ 'input-error': websiteLinkError }" />
+                <small class="text-muted">
+                    Link: https://your_frappe_domain.com/api/</small>
+                    <br>
                 <small v-if="websiteLinkError" class="error-text">
-                    Website link must include 'api/resource'.
+                    URL must Ends with '/api'.
                 </small>
             </div>
 

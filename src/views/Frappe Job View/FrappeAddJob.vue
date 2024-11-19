@@ -4,9 +4,9 @@
 import router from '@/router';
 import { reactive, computed, onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import frappe_api_key from '@/utils/frappe_api_keys';
+// import frappe_api_key from '@/utils/frappe_api_keys';
 import frappe_api_key_2 from '@/utils/frappe_api_keys';
-import { data } from 'autoprefixer';
+// import { data } from 'autoprefixer';
 
 const form = reactive({
   employment_type: 'Full-Time',
@@ -15,12 +15,12 @@ const form = reactive({
   designation: 'Software Developer',
   lower_range: 300000,
   upper_range: 500000,
-  location: 'Gulbarga',
+  location: '',
   custom_location: '',
-  company: 'StandardTouch (Demo)',
-  custom_company_description: 'Open Source',
-  custom_company_email: 'anwarpatelrazvi@gmail.com',
-  custom_company_phone: '9538405805',
+  company: '',
+  company_description: '',
+  company_email: '',
+  company_phone: '',
   publish: 1,
   publish_salary_range: 1,
   salary_per: 'Year'
@@ -44,9 +44,9 @@ const handleSubmit = async () => {
     lower_range: form.lower_range,
     upper_range: form.upper_range,
     company: form.company,
-    custom_company_description: form.custom_company_description,
-    custom_company_email: form.custom_company_email,
-    custom_company_phone: form.custom_company_phone,
+    company_description: form.company_description,
+    company_email: form.company_email,
+    company_phone: form.company_phone,
     publish: 1,
     publish_salary_range: 1,
     salary_per: 'Year'
@@ -64,7 +64,7 @@ const handleSubmit = async () => {
 
     // dynamic api from local storage
     const call_frappe_api = frappe_api_key_2()
-    const branch_response = await call_frappe_api.get(`/Branch?filters=[["branch","=","${check_branch.branch}"]]`);
+    const branch_response = await call_frappe_api.get(`/resource/Branch?filters=[["branch","=","${check_branch.branch}"]]`);
     console.log('Branch Response', branch_response);
 
     if (branch_response.data.data == 0) {
@@ -72,11 +72,11 @@ const handleSubmit = async () => {
       const new_branch = {
         branch: newJob.location
       }
-      const post_new_branch = await call_frappe_api.post('/Branch', new_branch);
+      const post_new_branch = await call_frappe_api.post('/resource/Branch', new_branch);
       console.log(post_new_branch);
     }
 
-    const frappe_response = await call_frappe_api.post('/Job Opening', newJob);
+    const frappe_response = await call_frappe_api.post('/resource/Job Opening', newJob);
 
     console.log('Frappe Response:', frappe_response);
     router.push(`/frappe-jobs/${frappe_response.data.data.name}`);
@@ -104,18 +104,27 @@ const branches = ref([]);
 onMounted(async () => {
   try {
     const call_frappe_api = frappe_api_key_2()
-    const all_branch_response = await call_frappe_api.get(`/Branch?as_dict=False`)
+    // Get Company
+    const company_response = await call_frappe_api.get(`/resource/Company?limit_start=1&amp;limit=1`)
+    let company_name = company_response.data.data[0].name;
+    form.company = company_response.data.data[0].name;
+    // console.log(company_name);
+    const company_fields = ["email", "phone_no", "company_description"]
+    const company_fields_json = encodeURIComponent(JSON.stringify(company_fields));
+    const company_details_response = await call_frappe_api.get(`/resource/Company?filters=[["name","=","${company_name}"]]&fields=${company_fields_json}`)
+    form.company_email = company_details_response.data.data[0]['email'];
+    form.company_phone = company_details_response.data.data[0]['phone_no']
+    form.company_description = company_details_response.data.data[0]['company_description']
+
+    //Getting Branches of company
+    const all_branch_response = await call_frappe_api.get(`/resource/Branch?as_dict=False`)
     const all_branch = all_branch_response.data.data
     branches.value = all_branch.map(branch => branch[0])
     branches.value.push('Create New Branch');
-    console.log('Array Branch', branches);
-
-    console.log(all_branch);
+    // console.log('Array Branch', branches);
+    // console.log(all_branch);
   } catch (error) {
     console.error('Error fetching job', error);
-  }
-  finally {
-
   }
 })
 </script>
@@ -227,21 +236,22 @@ onMounted(async () => {
           </div>
 
           <div class="mb-4">
-            <label for="custom_company_description" class="block text-gray-700 font-bold mb-2">Company
-              Description</label>
-            <textarea v-model="form.custom_company_description" id="custom_company_description"
-              name="custom_company_description" class="border rounded w-full py-2 px-3" rows="4"
-              placeholder="What does your company do?" readonly></textarea>
+            <label for="company_description" class="block text-gray-700 font-bold mb-2">Company Description</label>
+            <div id="company_description" class="border rounded w-full py-2 px-3"
+              style="min-height: 100px; background-color: #fff;">
+              <div v-html="form.company_description" class="html-content"></div>
+            </div>
           </div>
 
+
           <div class="mb-4">
-            <label for="custom_company_email" class="block text-gray-700 font-bold mb-2">Contact Email</label>
-            <input v-model="form.custom_company_email" type="email" id="contact_email" name="custom_company_email"
+            <label for="company_email" class="block text-gray-700 font-bold mb-2">Contact Email</label>
+            <input v-model="form.company_email" type="email" id="contact_email" name="company_email"
               class="border rounded w-full py-2 px-3" placeholder="Email address for applicants" required readonly />
           </div>
           <div class="mb-4">
-            <label for="custom_company_phone" class="block text-gray-700 font-bold mb-2">Contact Phone</label>
-            <input v-model="form.custom_company_phone" type="tel" id="custom_company_phone" name="custom_company_phone"
+            <label for="company_phone" class="block text-gray-700 font-bold mb-2">Contact Phone</label>
+            <input v-model="form.company_phone" type="tel" id="company_phone" name="company_phone"
               class="border rounded w-full py-2 px-3" placeholder="Optional phone for applicants" readonly />
           </div>
 
