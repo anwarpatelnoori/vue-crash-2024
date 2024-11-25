@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import frappe_api_key_2 from '@/utils/frappe_api_keys';
 import { useToast } from 'vue-toastification';
-
+import router from '@/router';
 const toast = useToast()
 const websiteLink = ref('');
 const apiKey = ref('');
@@ -32,6 +32,7 @@ const submitForm = async () => {
         
         if (response.status==200){
             toast.success(`Welcome ${response.data.message} your Frappe API is verified`)
+            router.push(`/home`);
         }
     } 
     catch (error) {
